@@ -1,0 +1,97 @@
+﻿<Window x:Class="XamlToPNG.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:XamlToPNG.Views" 
+        xmlns:viewmodels="clr-namespace:XamlToPNG.ViewModels" 
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
+        mc:Ignorable="d"
+        Title="Xaml To Image" WindowState="Maximized">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Open File(s)" Command="{Binding OpenFilesCommand}"/>
+                <MenuItem Header="Open Folder(s)" Command="{Binding OpenFoldersCommand}"/>
+            </MenuItem>
+        </Menu>
+
+        <StackPanel Orientation="Vertical">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MaxHeight="800">
+                <ItemsControl ItemsSource="{Binding LoadedXamls}" Margin="15">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type viewmodels:LoadedXaml}">
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="Filename:"/>
+                                    <TextBlock Text="{Binding XamlFilename}"/>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Vertical">
+                                            <TextBlock Text="Preview:"/>
+                                            <Border BorderBrush="Black" BorderThickness="3" Width="200" Height="200">
+                                                <Viewbox Margin="5">
+                                                    <ContentControl Content="{Binding DisplayElement}"/>
+                                                </Viewbox>
+                                            </Border>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Vertical" Margin="20 0 0 0">
+                                            <GroupBox>
+                                                <GroupBox.Header>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="Conversion Options:"/>
+                                                        <Button Content="+" Height="20" Width="20" 
+                                                    Command="{Binding AddConversionCommand}"
+                                                    Margin="10 0 0 0"/>
+                                                    </StackPanel>
+                                                </GroupBox.Header>
+                                                <ItemsControl ItemsSource="{Binding ConversionOptions}">
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <StackPanel Orientation="Horizontal"/>
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate DataType="{x:Type viewmodels:ConversionOptionsViewModel}">
+                                                            <GroupBox>
+                                                                <GroupBox.Header>
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <TextBlock Text="Conversion Option"/>
+                                                                        <Button Content="-" Height="20" Width="20" Command="{Binding RemoveConversionOptionCommand}" Margin="10 0 0 0"/>
+                                                                    </StackPanel>
+                                                                </GroupBox.Header>
+                                                                <StackPanel Orientation="Vertical">
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <StackPanel Orientation="Vertical">
+                                                                            <TextBlock Text="Width:"/>
+                                                                            <TextBox Text="{Binding Resolution.Width}" Width="100" HorizontalAlignment="Right"/>
+                                                                            <TextBlock Text="Height:" Margin="0 5 0 0"/>
+                                                                            <TextBox Text="{Binding Resolution.Height}" Width="100" HorizontalAlignment="Right"/>
+                                                                            <TextBlock Text="Aspect Ratio (Width / Height):" Margin="0 5 0 0"/>
+                                                                            <TextBox Text="{Binding Resolution.AspectRatio}" Width="100" HorizontalAlignment="Right"/>
+                                                                            <CheckBox Content="Preserve Aspect Ratio" IsChecked="{Binding Resolution.PreserveAspectRatio}" Margin="0 5 0 0"/>
+                                                                        </StackPanel>
+                                                                    </StackPanel>
+                                                                </StackPanel>
+                                                            </GroupBox>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </GroupBox>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <Button Content="Export" Command="{Binding ExportImagesCommand}" Width="200" Height="35" IsEnabled="{Binding HasXamlFiles}" HorizontalAlignment="Left" Margin="15 15 0 0"/>
+        </StackPanel>
+    </DockPanel>
+</Window>
